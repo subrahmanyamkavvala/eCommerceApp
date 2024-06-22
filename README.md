@@ -36,4 +36,6 @@ The following are the tech stack
 * OkHttp3 
 * Material Compose ed. Whether you're building a small app or a massive enterprise system, Material Compose has everything you need to take your UI to the next level
 
+![image](https://github.com/subrahmanyamkavvala/eCommerceApp/assets/8109917/a30c6252-00e1-4822-a99f-6487b8dc341a)
+
 
