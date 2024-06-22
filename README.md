@@ -18,22 +18,20 @@ The Clean architecture provides strong benifits for the large enterprice applica
 * Scalability : As each layer separated their own concerns and resposibilities its easy bring new feature or new module which can easily scale.
 * Testability.: Each layer can be tested indepently , the Data and Domin can be tested on JVM as its completed written in JVM apis which can be tested wiht out running applicaton
 * Maintainabilit : Easy to maintain in the large scale appplication .
+* 
 
  
 The following are the tech stack
 * Kotlin -
 * Android KTX -
 * AndroidX -
-* Viewmodel -The ViewModel class is like a superhero that stores and manages UI-related data in a lifecycle conscious way!
-* Kotlin Coroutines - A concurrency design pattern that simplifies async code execution on Android. It's like a secret weapon!
-* Retrofit - The superhero REST Client for Java and Android by Square inc under Apache 2.0 license. It's a simple network library used for network transactions and capturing JSON response from web services.
-* GSON - The superhero JSON Parser that understands Kotlin non-nullable and default parameters. It's like a genius!
-* Flow - The superhero type in Coroutines that can emit multiple values sequentially. It's like a superpower for async code execution!
-* Hilt - A dependency injection library for Android that reduces the boilerplate of manual dependency injection. It's like a magic wand!
-* Navigation Components - The superhero that helps you implement navigation from simple button clicks to more complex patterns. It's like a GPS for your app!
-* Logging Interceptor - The superhero interceptor that logs HTTP request and response data. It's like a CCTV for network transactions!
-* Mockito Kotlin 👨‍🔬 -
-* OkHttp3 🌐 -
-* Coil 🌀 - T
-* Room 🏠 -
+* Viewmodel -
+* Kotlin Coroutines - 
+* Retrofit 
+* GSON - 
+* Hilt -
+* Navigation Components 
+* Logging Interceptor
+* Mockito Kotlin
+* OkHttp3 
 * Material Compose ed. Whether you're building a small app or a massive enterprise system, Material Compose has everything you need to take your UI to the next level
