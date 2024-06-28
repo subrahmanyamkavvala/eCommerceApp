@@ -3,57 +3,63 @@ package com.example.ecommerce.presentation.screens.productList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.api.Result
-import com.example.ecommerce.data.repository.products.ProductsRepository
 import com.example.ecommerce.domain.mappers.GetProductListUsecase
-import com.example.ecommerce.presentation.screens.productList.mvi.ProductScreenIntent
-import com.example.ecommerce.presentation.screens.productList.mvi.ProductsScreenState
+import com.example.ecommerce.presentation.screens.productList.mvi.ProductsMVI
+import com.subbu.core.presentation.MVI
+import com.subbu.core.presentation.mvi
+
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
+private fun initialUiState() = ProductsMVI.ProductsScreenState(isLoading = true)
 
 @HiltViewModel
 class ProductsViewModel @Inject constructor(
     private val getProductListUsecase: GetProductListUsecase
-) : ViewModel() {
-
-    private val _state = MutableStateFlow(ProductsScreenState(isLoading = true))
-    val state: StateFlow<ProductsScreenState> = _state.asStateFlow()
+) : ViewModel(),
+    MVI<ProductsMVI.ProductsScreenState, ProductsMVI.ProductScreenAction, ProductsMVI.ProductScreenSideEffect> by mvi(
+        initialUiState = initialUiState()
+    ) {
 
     init {
-        processIntent(ProductScreenIntent.LoadProducts)
+        loadProducts()
     }
 
-    private fun processIntent(beersScreenIntent: ProductScreenIntent) {
-        when (beersScreenIntent) {
-            is ProductScreenIntent.LoadProducts -> {
-                viewModelScope.launch {
-                   when(val response = getProductListUsecase.invoke()) {
-                       is Result.Success -> {
-                            if(response.data != null) {
-                                setState {
-                                    onBeersDataLoaded(response.data)
-                                }
-                            }
-                       }
-
-                       is Result.Error -> {
-                           setState {
-                               onError(errorMsg = response.errorBody?:"")
-                           }
-                       }
-                   }
-
-                }
+    override fun onAction(uiAction: ProductsMVI.ProductScreenAction) {
+        when (uiAction) {
+            is ProductsMVI.ProductScreenAction.ClickedProduct -> {
+                viewModelScope.emitSideEffect(
+                    ProductsMVI.ProductScreenSideEffect.NavigateToProductDetailsScreen(
+                        uiAction.product
+                    )
+                )
             }
         }
+
     }
 
-    private fun setState(stateReducer: ProductsScreenState.() -> ProductsScreenState) {
+    private fun loadProducts() {
         viewModelScope.launch {
-            _state.emit(stateReducer(state.value))
+            when (val response = getProductListUsecase.invoke()) {
+                is Result.Success -> {
+                    if (response.data != null) {
+                        updateUiState(ProductsMVI.ProductsScreenState(response.data, false))
+
+                    }
+                }
+
+                is Result.Error -> {
+                    updateUiState(
+                        ProductsMVI.ProductsScreenState(
+                            errorMsg = response.errorBody ?: ""
+                        )
+                    )
+                }
+            }
+
         }
+
     }
 }

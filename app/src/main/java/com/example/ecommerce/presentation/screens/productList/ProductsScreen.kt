@@ -1,5 +1,6 @@
 package com.example.ecommerce.presentation.screens.productList
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +19,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,14 +34,34 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.ecommerce.NavRoute
 import com.example.ecommerce.data.domainModels.products.ProductListResponseDomain
-import com.example.ecommerce.presentation.screens.productList.mvi.ProductsScreenState
+import com.example.ecommerce.presentation.screens.productList.mvi.CollectSideEffect
+import com.example.ecommerce.presentation.screens.productList.mvi.ProductsMVI
 import com.example.ecommerce.ui.widgets.LoadingScreen
+import kotlinx.coroutines.flow.Flow
 
+
+@Composable
+fun ProductsScreen() {
+
+}
 @Composable
 fun ProductsScreen(navController: NavHostController) {
     val productsViewModel = hiltViewModel<ProductsViewModel>()
-    val state = productsViewModel.state.collectAsState().value
 
+    val uiState by productsViewModel.uiState.collectAsState()
+    val sideEffect: Flow<ProductsMVI.ProductScreenSideEffect> = productsViewModel.sideEffect
+    val onAction = productsViewModel::onAction
+
+    val context = LocalContext.current
+
+    CollectSideEffect(sideEffect = sideEffect) {
+        when (it) {
+            is ProductsMVI.ProductScreenSideEffect.NavigateToProductDetailsScreen -> {
+                navController.navigate(NavRoute.PRODUCTDETAILS.route + "/${it.product.productId}")
+                Toast.makeText(context, "navigate to  ${it.product.description}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     Scaffold(topBar = {
         TopBar(title = "eCommerce App")
     }) { padding ->
@@ -47,18 +71,18 @@ fun ProductsScreen(navController: NavHostController) {
                 .padding(padding)
         ) {
             when {
-                state.isLoading -> {
+                uiState.isLoading -> {
                     LoadingScreen()
                 }
 
-                state.errorMsg != null -> {
-                    ErrorScreen(state.errorMsg)
+                uiState.errorMsg != null -> {
+                    ErrorScreen(uiState.errorMsg)
                 }
 
-                state.productList?.isNotEmpty() == true -> {
-                    ProductsListContent(state = state,
+                uiState.productList?.isNotEmpty() == true -> {
+                    ProductsListContent(state = uiState,
                         onProductItemSelected = {
-                            navController.navigate(NavRoute.PRODUCTDETAILS.route + "/${it.productId}")
+                            onAction(ProductsMVI.ProductScreenAction.ClickedProduct(it))
                         })
                 }
             }
@@ -69,7 +93,7 @@ fun ProductsScreen(navController: NavHostController) {
 
 @Composable
 private fun ProductsListContent(
-    state: ProductsScreenState,
+    state: ProductsMVI.ProductsScreenState,
     onProductItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit,
 ) {
     val listState = rememberLazyListState()
@@ -108,7 +132,10 @@ private fun ProductCard(
                     .padding(2.dp),
                 contentScale = ContentScale.Fit
             )
-            Column (Modifier.fillMaxWidth().align(Alignment.CenterVertically)){
+            Column (
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)){
                 product.description?.let { BeerName(title = it) }
                 product.price?.let { BeerTagLine(title = "Price  Rs $it") }
             }
