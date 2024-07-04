@@ -1,10 +1,7 @@
 package com.example.ecommerce.di
 
-import com.example.ecommerce.data.repository.products.ProductsDataSource
-import com.example.ecommerce.data.repository.products.ProductsDataSourceImpl
 import com.example.ecommerce.data.repository.products.ProductsRepository
-import com.example.ecommerce.data.repository.products.ProductsService
-import com.example.ecommerce.domain.mappers.GetProductListUsecase
+import com.example.ecommerce.domain.usecases.GetProductListUsecase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

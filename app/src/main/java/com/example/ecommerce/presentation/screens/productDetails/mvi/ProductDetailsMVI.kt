@@ -1,7 +1,6 @@
 package com.example.ecommerce.presentation.screens.productDetails.mvi
 
 import com.example.ecommerce.data.domainModels.products.ProductListResponseDomain
-import com.example.ecommerce.presentation.screens.productDetails.ProductDetailsViewModel
 
 data class ProductDetailsScreenState(
     val productDetails: ProductListResponseDomain.ProductListResponseItemDomain? = null,
@@ -19,7 +18,7 @@ data class ProductDetailsScreenState(
 
 }
 
-sealed class BeerDetailsScreenIntent {
+sealed class ProductDetailsMVI {
 
-    object LoadBeerDetails: BeerDetailsScreenIntent()
+    object LoadProductDetails: ProductDetailsMVI()
 }

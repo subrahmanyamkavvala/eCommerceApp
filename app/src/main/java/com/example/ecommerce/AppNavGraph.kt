@@ -14,8 +14,8 @@ fun AppNavGraph(navController: NavHostController) {
             ProductsScreen(navController)
         }
         composable(route = NavRoute.PRODUCTDETAILS.route + "/{product_id}") { navBackStackEntry ->
-            val selectedBeerId = navBackStackEntry.arguments?.getString("product_id")
-            ProductDetailsScreen(selectedBeerId = selectedBeerId?.toInt() ?: 1, navController = navController)
+            val productId = navBackStackEntry.arguments?.getString("product_id")
+            ProductDetailsScreen(productid = productId, navController = navController)
         }
     }
 }

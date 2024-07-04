@@ -30,18 +30,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.ecommerce.data.domainModels.products.ProductListResponseDomain
-import com.example.ecommerce.presentation.screens.productDetails.mvi.BeerDetailsScreenIntent
+import com.example.ecommerce.presentation.screens.productDetails.mvi.ProductDetailsMVI
 import com.example.ecommerce.ui.widgets.LoadingScreen
 
 @Composable
-fun ProductDetailsScreen(selectedBeerId: Int?, navController: NavHostController) {
+fun ProductDetailsScreen(productid: String?, navController: NavHostController) {
     val productDetailsViewModel = hiltViewModel<ProductDetailsViewModel>()
     val state = productDetailsViewModel.state.collectAsState().value
 
     LaunchedEffect(key1 =  Unit ){
         productDetailsViewModel.processIntent(
-            BeerDetailsScreenIntent.LoadBeerDetails,
-            selectedBeerId
+            ProductDetailsMVI.LoadProductDetails,
+            productid
         )
     }
     Scaffold(topBar = {

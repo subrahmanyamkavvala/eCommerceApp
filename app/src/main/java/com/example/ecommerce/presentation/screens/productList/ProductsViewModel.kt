@@ -3,7 +3,7 @@ package com.example.ecommerce.presentation.screens.productList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecommerce.api.Result
-import com.example.ecommerce.domain.mappers.GetProductListUsecase
+import com.example.ecommerce.domain.usecases.GetProductListUsecase
 import com.example.ecommerce.presentation.screens.productList.mvi.ProductsMVI
 import com.subbu.core.presentation.MVI
 import com.subbu.core.presentation.mvi
@@ -58,8 +58,6 @@ class ProductsViewModel @Inject constructor(
                     )
                 }
             }
-
         }
-
     }
 }

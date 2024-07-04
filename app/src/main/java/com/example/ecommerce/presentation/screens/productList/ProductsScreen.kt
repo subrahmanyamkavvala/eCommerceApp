@@ -37,6 +37,7 @@ import com.example.ecommerce.data.domainModels.products.ProductListResponseDomai
 import com.example.ecommerce.presentation.screens.productList.mvi.CollectSideEffect
 import com.example.ecommerce.presentation.screens.productList.mvi.ProductsMVI
 import com.example.ecommerce.ui.widgets.LoadingScreen
+import com.subbu.core.logger.Logger
 import kotlinx.coroutines.flow.Flow
 
 
@@ -57,8 +58,9 @@ fun ProductsScreen(navController: NavHostController) {
     CollectSideEffect(sideEffect = sideEffect) {
         when (it) {
             is ProductsMVI.ProductScreenSideEffect.NavigateToProductDetailsScreen -> {
-                navController.navigate(NavRoute.PRODUCTDETAILS.route + "/${it.product.productId}")
+                Logger.log("product clicked : ")
                 Toast.makeText(context, "navigate to  ${it.product.description}", Toast.LENGTH_SHORT).show()
+                navController.navigate(NavRoute.PRODUCTDETAILS.route + "/${it.product.productId}")
             }
         }
     }
@@ -125,7 +127,7 @@ private fun ProductCard(
         Row {
             AsyncImage(
                 model = "https://fastly.picsum.photos/id/1018/200/200.jpg?hmac=uHjw5VeUXsbJBBE5Ywaumr-fxWyViVwI_GRwrA3AQ2Q",
-                contentDescription = "beer description",
+                contentDescription = " description",
                 modifier = Modifier
                     .height(180.dp)
                     .width(140.dp)

@@ -1,4 +1,4 @@
-package com.example.ecommerce.domain.mappers
+package com.example.ecommerce.domain.usecases
 
 import com.example.ecommerce.api.Result
 import com.example.ecommerce.data.domainModels.products.ProductListResponseDomain
