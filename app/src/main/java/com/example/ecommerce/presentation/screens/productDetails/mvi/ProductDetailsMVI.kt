@@ -8,7 +8,7 @@ data class ProductDetailsScreenState(
     val errorMessage:String? = null
 ) {
 
-    fun onBeerDetailsDataLoaded(details: ProductListResponseDomain.ProductListResponseItemDomain): ProductDetailsScreenState {
+    fun onProductDetailsDataLoaded(details: ProductListResponseDomain.ProductListResponseItemDomain): ProductDetailsScreenState {
         return copy(productDetails = details, isLoading = false)
     }
 

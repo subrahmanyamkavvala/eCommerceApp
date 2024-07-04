@@ -17,6 +17,7 @@ fun AppNavGraph(navController: NavHostController) {
             val productId = navBackStackEntry.arguments?.getString("product_id")
             ProductDetailsScreen(productid = productId, navController = navController)
         }
+
     }
 }
 

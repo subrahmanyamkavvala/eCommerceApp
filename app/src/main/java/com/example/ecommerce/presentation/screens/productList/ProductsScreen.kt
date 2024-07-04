@@ -19,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -103,8 +102,8 @@ private fun ProductsListContent(
         if(!state.productList.isNullOrEmpty()){
             state.productList?.size?.let { productItem ->
                 items(productItem) {
-                    ProductCard(product = state.productList[it]) { selectedBeerItem ->
-                        onProductItemSelected(selectedBeerItem)
+                    ProductCard(product = state.productList[it]) { selectedProduct ->
+                        onProductItemSelected(selectedProduct)
                     }
                 }
             }
@@ -119,11 +118,11 @@ private fun ProductsListContent(
 private fun ProductCard(
     product: ProductListResponseDomain.ProductListResponseItemDomain,
     modifier: Modifier = Modifier,
-    onBeerItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit
+    productItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit
 ) {
     Card(modifier = modifier
         .fillMaxWidth()
-        .padding(4.dp), onClick = { onBeerItemSelected(product) }) {
+        .padding(4.dp), onClick = { productItemSelected(product) }) {
         Row {
             AsyncImage(
                 model = "https://fastly.picsum.photos/id/1018/200/200.jpg?hmac=uHjw5VeUXsbJBBE5Ywaumr-fxWyViVwI_GRwrA3AQ2Q",
@@ -138,8 +137,8 @@ private fun ProductCard(
                 Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterVertically)){
-                product.description?.let { BeerName(title = it) }
-                product.price?.let { BeerTagLine(title = "Price  Rs $it") }
+                product.description?.let { ProductNameWidget(title = it) }
+                product.price?.let { ProductPrice(price = "Price  Rs $it") }
             }
         }
     }
@@ -167,7 +166,7 @@ private fun TopBar(title: String) {
 }
 
 @Composable
-fun BeerName(title: String, modifier: Modifier = Modifier) {
+fun ProductNameWidget(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         modifier = modifier.padding(4.dp),
@@ -177,9 +176,9 @@ fun BeerName(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BeerTagLine(title: String, modifier: Modifier = Modifier) {
+fun ProductPrice(price: String, modifier: Modifier = Modifier) {
     Text(
-        text = title,
+        text = price,
         modifier = modifier.padding(4.dp),
         style = MaterialTheme.typography.titleSmall,
         fontWeight = FontWeight.Bold

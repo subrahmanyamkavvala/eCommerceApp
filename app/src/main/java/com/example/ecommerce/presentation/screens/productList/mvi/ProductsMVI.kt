@@ -43,7 +43,7 @@ interface ProductsMVI {
         val isLoading: Boolean = false,
         val errorMsg: String? = null,
     ) {
-        fun onBeersDataLoaded(products: ProductListResponseDomain): ProductsScreenState {
+        fun onProductDataLoaded(products: ProductListResponseDomain): ProductsScreenState {
             return copy(productList = products, isLoading = false)
         }
 
