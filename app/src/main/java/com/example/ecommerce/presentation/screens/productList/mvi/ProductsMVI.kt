@@ -54,10 +54,19 @@ interface ProductsMVI {
 
 
     sealed interface ProductScreenAction {
-        data class ClickedProduct(val product : ProductListResponseDomain.ProductListResponseItemDomain) : ProductScreenAction
+        data class ClickedProduct(val product: ProductListResponseDomain.ProductListResponseItemDomain) :
+            ProductScreenAction
+
+        data class addToCart(val product: ProductListResponseDomain.ProductListResponseItemDomain) :
+            ProductScreenAction
     }
+
     sealed interface ProductScreenSideEffect {
-        data class NavigateToProductDetailsScreen(val product : ProductListResponseDomain.ProductListResponseItemDomain) : ProductScreenSideEffect
+        data class NavigateToProductDetailsScreen(val product: ProductListResponseDomain.ProductListResponseItemDomain) :
+            ProductScreenSideEffect
+
+        data class addToCart(val product: ProductListResponseDomain.ProductListResponseItemDomain) :
+            ProductScreenSideEffect
 
     }
 

@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +46,7 @@ import kotlinx.coroutines.flow.Flow
 fun ProductsScreen() {
 
 }
+
 @Composable
 fun ProductsScreen(navController: NavHostController) {
     val productsViewModel = hiltViewModel<ProductsViewModel>()
@@ -58,8 +61,17 @@ fun ProductsScreen(navController: NavHostController) {
         when (it) {
             is ProductsMVI.ProductScreenSideEffect.NavigateToProductDetailsScreen -> {
                 Logger.log("product clicked : ")
-                Toast.makeText(context, "navigate to  ${it.product.description}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "navigate to  ${it.product.description}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 navController.navigate(NavRoute.PRODUCTDETAILS.route + "/${it.product.productId}")
+            }
+
+            is ProductsMVI.ProductScreenSideEffect.addToCart -> {
+                Toast.makeText(context, "${it.product.description + "added to Cart"}", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -84,6 +96,8 @@ fun ProductsScreen(navController: NavHostController) {
                     ProductsListContent(state = uiState,
                         onProductItemSelected = {
                             onAction(ProductsMVI.ProductScreenAction.ClickedProduct(it))
+                        }, addToCartHandler = {
+                            onAction(ProductsMVI.ProductScreenAction.addToCart(it))
                         })
                 }
             }
@@ -96,15 +110,22 @@ fun ProductsScreen(navController: NavHostController) {
 private fun ProductsListContent(
     state: ProductsMVI.ProductsScreenState,
     onProductItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit,
+    addToCartHandler: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit
 ) {
     val listState = rememberLazyListState()
     LazyColumn(state = listState) {
-        if(!state.productList.isNullOrEmpty()){
+        if (!state.productList.isNullOrEmpty()) {
             state.productList?.size?.let { productItem ->
                 items(productItem) {
-                    ProductCard(product = state.productList[it]) { selectedProduct ->
-                        onProductItemSelected(selectedProduct)
-                    }
+                    ProductCard(
+                        product = state.productList[it],
+                        modifier = Modifier,
+                        { selectedProduct ->
+                            onProductItemSelected(selectedProduct)
+                        },
+                        { product ->
+                            addToCartHandler(product)
+                        })
                 }
             }
         }
@@ -118,7 +139,8 @@ private fun ProductsListContent(
 private fun ProductCard(
     product: ProductListResponseDomain.ProductListResponseItemDomain,
     modifier: Modifier = Modifier,
-    productItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit
+    productItemSelected: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit,
+    addTocart: (ProductListResponseDomain.ProductListResponseItemDomain) -> Unit
 ) {
     Card(modifier = modifier
         .fillMaxWidth()
@@ -133,12 +155,22 @@ private fun ProductCard(
                     .padding(2.dp),
                 contentScale = ContentScale.Fit
             )
-            Column (
+            Column(
                 Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterVertically)){
+                    .align(Alignment.CenterVertically)
+            ) {
                 product.description?.let { ProductNameWidget(title = it) }
                 product.price?.let { ProductPrice(price = "Price  Rs $it") }
+                Row(Modifier.padding(1.dp)) {
+                    Spacer(Modifier.weight(1f))
+                    addToCardButton(modifier) {
+                        Logger.log("added to cart ${product.productId}")
+                        Logger.log("added to cart ${product.name}")
+                        addTocart(product)
+                    }
+                }
+
             }
         }
     }
@@ -183,4 +215,30 @@ fun ProductPrice(price: String, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.titleSmall,
         fontWeight = FontWeight.Bold
     )
+}
+
+@Composable
+fun addToCardButton(modifier: Modifier, clickeAdtoCart: () -> Unit) {
+    Button(onClick = clickeAdtoCart) {
+        Text(
+            text = "Add to Card",
+            modifier = modifier.padding(4.dp),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun addToFavourite(modifier: Modifier) {
+    Button(onClick = { Logger.log("added to cart") }) {
+        Text(
+            text = "Favourite",
+            modifier = modifier.padding(4.dp),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
 }

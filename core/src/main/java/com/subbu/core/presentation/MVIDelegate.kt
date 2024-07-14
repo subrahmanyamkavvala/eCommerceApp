@@ -1,11 +1,6 @@
 package com.subbu.core.presentation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
+import com.subbu.core.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -16,9 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 class MVIDelegate<UiState, UiAction, SideEffect> internal constructor(
     initialUiState: UiState,
@@ -33,7 +25,11 @@ class MVIDelegate<UiState, UiAction, SideEffect> internal constructor(
     override fun onAction(uiAction: UiAction) {}
 
     override fun updateUiState(newUiState: UiState) {
-        _uiState.update { newUiState }
+        Logger.log("updating state on ${Thread.currentThread().name}")
+       // _uiState.update { newUiState }
+        _uiState.value = newUiState
+        Logger.log("updating state on current ${_uiState.value}")
+        Logger.log("updating state on new ${newUiState}")
     }
 
     override fun updateUiState(block: UiState.() -> UiState) {

@@ -9,6 +9,7 @@ import com.subbu.core.presentation.MVI
 import com.subbu.core.presentation.mvi
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,12 +37,20 @@ class ProductsViewModel @Inject constructor(
                     )
                 )
             }
-        }
+            is ProductsMVI.ProductScreenAction.addToCart -> {
+                viewModelScope.emitSideEffect(
+                    ProductsMVI.ProductScreenSideEffect.addToCart(
+                        uiAction.product
+                    )
+                )
 
+            }
+        }
     }
 
     private fun loadProducts() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+
             when (val response = getProductListUsecase.invoke()) {
                 is Result.Success -> {
                     if (response.data != null) {
